@@ -15,9 +15,21 @@ struct Coordenadas{
     }
 };
 
-bool operator==(Coordenadas a, Coordenadas b)
+/*bool operator==(Coordenadas a, Coordenadas b)
 {
 	if(a.x == b.x && a.y == b.y)
+	{
+		return true;
+	}
+	else
+	{
+		false;
+	}
+}*/
+
+bool operator==(int a, Coordenadas b)
+{
+	if(a == b.x || a == b.y)
 	{
 		return true;
 	}
@@ -30,24 +42,20 @@ bool operator==(Coordenadas a, Coordenadas b)
 int main()
 {
 	//Posição inicial do carro
-    int xCarro = 8; 
-    int yCarro = 4;
+    vector<Coordenadas> coordenadas;
+    Coordenadas carro(8, 4);
+    Coordenadas saida(1, 4);
 
-    int posOriginalX = 8;
-    int posOriginalY = 4;
-	
+    int posOgX = 8;
+    int posOgY = 4;
+
 	//Posição do final do labirinto
-    int xSaida = 1;
-    int ySaida = 4;
 	
 	//Labirinto
 	string lab[10][10];
 
     int contador = 1;
-    int x;
-    int y;
 
-    vector<Coordenadas> coordenadas;
 
     int i = 0;
     /*int memoria = 0;
@@ -156,9 +164,8 @@ int main()
             lab[i][4] = ".";
         }
         
-        lab[xSaida][ySaida] = "#"; //Ponto final
-        
-        lab[xCarro][yCarro] = "C"; //Icone do carro
+        lab[saida.x][saida.y] = "#"; //Ponto final
+        lab[carro.x][carro.y] = "C"; //Icone do carro
 
 		//Printa o labirinto
         for(int i = 0; i < 10; i++)
@@ -171,15 +178,15 @@ int main()
         }
 		
 		//Quando o carro chega no final, ele quebra o loop
-        if(xCarro == xSaida && yCarro == ySaida)
+        if(carro.x == saida.x && carro.y == saida.y)
         {
         	if(coordenadas.size() > 0)
         	{
         		cout << "Carro encontrou outros possiveis caminhos" << endl;
         		cout << "Pressione qualquer tecla para continuar: ";
         		cin >> lixo;
-        		xCarro = posOriginalX;
-        		yCarro = posOriginalY;
+        		carro.x = posOgX;
+        		carro.y = posOgY;
                 caminhoAlt = true;
         		system("clear || cls");
 			}
@@ -189,19 +196,19 @@ int main()
             }
         }
 
-        if(lab[xCarro][yCarro-1] == "." && lab[xCarro-1][yCarro] == "." && foiDireita == false && caminhoAlt == false)
+        if(lab[carro.x][carro.y-1] == "." && lab[carro.x-1][carro.y] == "." && foiDireita == false && caminhoAlt == false)
         {
-            coordenadas.push_back(Coordenadas(xCarro, yCarro));
+            coordenadas.push_back(Coordenadas(carro.x, carro.y));
         }
 
-        if(xCarro == coordenadas[coordenadas.size()-1] && yCarro == coordenadas[coordenadas.size()-1] && caminhoAlt == true)
+        if(carro.x == coordenadas[coordenadas.size()-1] && carro.y == coordenadas[coordenadas.size()-1] && caminhoAlt == true)
         {
-            xCarro--;
+            carro.x--;
         }
         
-        if(lab[xCarro][yCarro-1] != " " && lab[xCarro][yCarro-1] != "*" && podeEsquerda == true) //Carro vai para esquerda
+        if(lab[carro.x][carro.y-1] != " " && lab[carro.x][carro.y-1] != "*" && podeEsquerda == true) //Carro vai para esquerda
         {
-            yCarro--;
+            carro.y--;
             if(foiDireita == true) //Se o carro for para a esquerda logo após ir para a direita, ele subtrai 1 do contadorD
             {
                 contadorD -= 1;
@@ -218,9 +225,9 @@ int main()
         }
         else
         {
-            if(lab[xCarro-1][yCarro] != " " && lab[xCarro-1][yCarro] != "*" && podeFrente == true) //Se nao der, o carro vai para frente
+            if(lab[carro.x-1][carro.y] != " " && lab[carro.x-1][carro.y] != "*" && podeFrente == true) //Se nao der, o carro vai para frente
             {
-                xCarro--;
+                carro.x--;
                 podeEsquerda = true;
                 if(foiTras == true) //Se o carro for para frente logo após ir para tras, ele subtrai 1 do contadorT
                 {
@@ -238,9 +245,9 @@ int main()
             }
             else
             {
-                if(lab[xCarro][yCarro+1] != " " && lab[xCarro][yCarro+1] != "*" && podeDireita == true) //Se nao der, o carro vai para direita
+                if(lab[carro.x][carro.y+1] != " " && lab[carro.x][carro.y+1] != "*" && podeDireita == true) //Se nao der, o carro vai para direita
                 {
-                    yCarro++;
+                    carro.y++;
                     podeFrente = true;
                     podeEsquerda = false;
                     if(foiEsquerda == true) //Se o carro for para a direita logo após ir para a esquerda, ele subtrai 1 do contadorE
@@ -259,9 +266,9 @@ int main()
                 }
                 else
                 {
-                    if(lab[xCarro+1][yCarro] != " " && lab[xCarro+1][yCarro] != "*") //Se nao der, o carro vai para tras
+                    if(lab[carro.x+1][carro.y] != " " && lab[carro.x+1][carro.y] != "*") //Se nao der, o carro vai para tras
                     {
-                        xCarro++;
+                        carro.x++;
                         podeEsquerda = false;
                         podeFrente = false;
                         podeDireita = true;
@@ -282,9 +289,9 @@ int main()
                     }
                     else
                     {
-                        if(lab[xCarro][yCarro+contador] != "." && lab[xCarro+contador][yCarro] != "." && lab[xCarro-contador][yCarro] != ".") //Se o carro encontrar um caminho fechado no lado direito, ele da um "giro" e volta
+                        if(lab[carro.x][carro.y+contador] != "." && lab[carro.x+contador][carro.y] != "." && lab[carro.x-contador][carro.y] != ".") //Se o carro encontrar um caminho fechado no lado direito, ele da um "giro" e volta
                         {
-                            yCarro--;
+                            carro.y--;
                             contador++;
                             podeEsquerda = false;
                             podeFrente = false;
@@ -308,7 +315,7 @@ int main()
 
         cout << endl;
         cout << endl;
-        cout << "Caminhos alternativos: " << caminhoX.size() << endl;
+        cout << "Caminhos alternativos: " << coordenadas.size() << endl;
         //cout << "Caminho x: " << caminhoX[i] << "\nCaminho y: " << caminhoY[i] << endl;
         cout << "Pressione qualquer botao para continuar: ";
         cin >> lixo;
@@ -324,8 +331,8 @@ int main()
 	
 	
 	//Segunda corrida
-    xCarro = 8;
-    yCarro = 4;
+    carro.x = 8;
+    carro.y = 4;
 
     podeEsquerda = true;
     podeDireita = true;
@@ -396,9 +403,9 @@ int main()
             lab[i][4] = ".";
         }
         
-        lab[xSaida][ySaida] = "#";
+        lab[saida.x][saida.y] = "#";
         
-        lab[xCarro][yCarro] = "C";
+        lab[carro.x][carro.y] = "C";
 
         for(int i = 0; i < 10; i++)
         {
@@ -409,32 +416,32 @@ int main()
             cout << endl;
         }
 
-        if(xCarro == xSaida && yCarro == ySaida)
+        if(carro.x == saida.x && carro.y == saida.y)
         {
             break;
         }
 
-        if(lab[xCarro][yCarro-1] != " " && lab[xCarro][yCarro-1] != "*" && podeEsquerda == true && contadorE > 0) //Carro vai para esquerda
+        if(lab[carro.x][carro.y-1] != " " && lab[carro.x][carro.y-1] != "*" && podeEsquerda == true && contadorE > 0) //Carro vai para esquerda
         {
-            yCarro--;
+            carro.y--;
             contadorE--;
         }
-        else if(lab[xCarro-1][yCarro] != " " && lab[xCarro-1][yCarro] != "*" && podeFrente == true && contadorF > 0) //Carro vai para frente
+        else if(lab[carro.x-1][carro.y] != " " && lab[carro.x-1][carro.y] != "*" && podeFrente == true && contadorF > 0) //Carro vai para frente
         {
-            xCarro--;
+            carro.x--;
             contadorF--;
             podeEsquerda = true;
         }
-        else if(lab[xCarro][yCarro+1] != " " && lab[xCarro][yCarro+1] != "*" && podeDireita == true && contadorD > 0) //Carro vai para direita
+        else if(lab[carro.x][carro.y+1] != " " && lab[carro.x][carro.y+1] != "*" && podeDireita == true && contadorD > 0) //Carro vai para direita
         {
-            yCarro++;
+            carro.y++;
             contadorD--;
             podeEsquerda = false;
             podeFrente = true;
         }
-        else if(lab[xCarro+1][yCarro] != " " && lab[xCarro+1][yCarro] != "*" && contadorT > 0) //Carro vai para tras
+        else if(lab[carro.x+1][carro.y] != " " && lab[carro.x+1][carro.y] != "*" && contadorT > 0) //Carro vai para tras
         {
-            xCarro++;
+            carro.x++;
             contadorT--;
             podeDireita = true;
             podeEsquerda = false;
